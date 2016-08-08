@@ -1,0 +1,14 @@
+{
+  "name": "revcheck",
+  "version": "0.1.4",
+  "description": "",
+  "main": "rev.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "revcheck": "./rev.js"
+  },
+  "author": "Eric Jinks",
+  "license": "ISC"
+}
