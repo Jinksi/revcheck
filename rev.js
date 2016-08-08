@@ -59,7 +59,7 @@ var theme = process.argv[3];
 
         } else if(remote.trim().length < 10 ) {
           console.log('–––––––––––––')
-          console.log('mismatch!')
+          console.log('mismatch 🤔')
           console.log('local: ' + local.trim())
           console.log('remote: ' + remote.trim())
           console.log('trying again...')
