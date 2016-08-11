@@ -5,7 +5,9 @@ var path = require('path');
 var fs = require('fs');
 var spawn = require('child_process').spawn;
 var url = process.argv[2];
-var theme = process.argv[3];
+
+var dirObj = path.parse(path.resolve());
+var theme = dirObj.base;
 
 (function(){
 
@@ -37,7 +39,7 @@ var theme = process.argv[3];
 
     getCNAME(function(){
       if(!url || !theme){
-        return console.log('revcheck <site-url> <theme-folder> [--auto|-a]')
+        return console.log('revcheck <site-url> [--auto|-a]')
       }
       if(url.indexOf('http') < 0 ){
         url = 'http://' + url;
