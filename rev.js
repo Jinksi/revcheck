@@ -9,6 +9,20 @@ var theme = process.argv[3];
 
 (function(){
 
+  function getCNAME(cb){
+    fs.readFile(path.resolve() + '/CNAME', 'utf8', function(err, data){
+      // if(err) return false;
+      if(data) {
+        console.log('––––––––––––––––––––––––––')
+        console.log('       Using CNAME       ');
+        var CNAME = data.split('\n');
+        if(CNAME[0]){ url = CNAME[0]; }
+        if(CNAME[1]){ theme = CNAME[1]; }
+      }
+      cb();
+    });
+  }
+
   function getRemote(){
     if(process.argv.find(arg => arg === '-a' || arg === '--auto')){
       var fullDir = path.resolve().split(path.sep)
@@ -21,29 +35,32 @@ var theme = process.argv[3];
       console.log('themeDir: ' + theme)
     }
 
-    if(!url || !theme){
+    getCNAME(function(){
+      if(!url || !theme){
         return console.log('revcheck <site-url> <theme-folder> [--auto|-a]')
-    }
+      }
+      if(url.indexOf('http') < 0 ){
+        url = 'http://' + url;
+      }
 
-    if(url.indexOf('http') < 0 ){
-      url = 'http://' + url;
-    }
+      http.get(url + '/wp-content/themes/' + theme + '/VERSION', function(res){
+        res.setEncoding('utf8');
+        var str = '';
+        res.on('data', function(chunk){
+          str += chunk;
+        });
+        res.on('end', function(){
 
-    http.get(url + '/wp-content/themes/' + theme + '/VERSION', function(res){
-      res.setEncoding('utf8');
-      var str = '';
-      res.on('data', function(chunk){
-        str += chunk;
+          var local = getLocal(str);
+
+        });
+        res.resume();
+      }).on('error', function(e) {
+        console.log('Got error: ' + e.message);
       });
-      res.on('end', function(){
 
-        var local = getLocal(str);
-
-      });
-      res.resume();
-    }).on('error', function(e) {
-      console.log('Got error: ' + e.message);
     });
+
   }
 
   function getLocal(remote){
@@ -76,6 +93,7 @@ var theme = process.argv[3];
       }
     })
   }
+
   if(process.argv.find(arg => arg === 'push' )){
     var gp = spawn('git', ['push']);
     gp.stdout.on('data', (data) => {
